@@ -18,10 +18,8 @@ import org.unidal.lookup.PlexusContainer;
 import com.dianping.cat.configuration.client.entity.ClientConfig;
 import com.dianping.cat.configuration.client.entity.Server;
 import com.dianping.cat.message.Event;
-import com.dianping.cat.message.ForkedTransaction;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.MessageProducer;
-import com.dianping.cat.message.TaggedTransaction;
 import com.dianping.cat.message.Trace;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageManager;
@@ -138,9 +136,7 @@ public class Cat {
 	}
 
 	public static boolean isInitialized() {
-		synchronized (s_instance) {
-			return s_instance.m_container != null;
-		}
+		return s_init;
 	}
 
 	static void log(String severity, String message) {
@@ -295,16 +291,8 @@ public class Cat {
 		return Cat.getProducer().newEvent(type, name);
 	}
 
-	public static ForkedTransaction newForkedTransaction(String type, String name) {
-		return Cat.getProducer().newForkedTransaction(type, name);
-	}
-
 	public static Heartbeat newHeartbeat(String type, String name) {
 		return Cat.getProducer().newHeartbeat(type, name);
-	}
-
-	public static TaggedTransaction newTaggedTransaction(String type, String name, String tag) {
-		return Cat.getProducer().newTaggedTransaction(type, name, tag);
 	}
 
 	public static Trace newTrace(String type, String name) {
@@ -314,7 +302,7 @@ public class Cat {
 	public static Transaction newTransaction(String type, String name) {
 		return Cat.getProducer().newTransaction(type, name);
 	}
-	
+
 	// this should be called when a thread ends to clean some thread local data
 	public static void reset() {
 		// remove me

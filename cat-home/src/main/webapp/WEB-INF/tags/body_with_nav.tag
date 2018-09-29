@@ -38,12 +38,12 @@
 						<li id="dashbord_metric"><a href="/cat/r/metric?op=dashboard&domain=${model.domain}">
 							<i class="menu-icon fa fa-caret-right"></i>业务大盘</a>
 							<b class="arrow"></b></li>
-						<li id="dashbord_database"><a href="/cat/r/storage?op=dashboard&domain=${model.domain}">
+						<%-- <li id="dashbord_database"><a href="/cat/r/storage?op=dashboard&domain=${model.domain}">
 							<i class="menu-icon fa fa-caret-right"></i>数据库大盘</a>
 							<b class="arrow"></b></li>
 						<li id="dashbord_cache"><a href="/cat/r/storage?op=dashboard&domain=${model.domain}&type=Cache">
 							<i class="menu-icon fa fa-caret-right"></i>缓存大盘</a>
-							<b class="arrow"></b></li>
+							<b class="arrow"></b></li> --%>
 					</ul>
 				</li>
 				<li id="Transaction_report" >
@@ -81,11 +81,11 @@
 					</a> <b class="arrow"></b>
 					<ul class="submenu">
 						<li id="cache_operation"><a href="/cat/r/storage?id=memcached&type=Cache&domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}">
-							<i class="menu-icon fa fa-caret-right"></i>访问趋势</a>
+							<i class="menu-icon fa fa-caret-right"></i>集群指标</a>
 							<b class="arrow"></b></li>
-						<li id="cache_info"><a href="/cat/r/cache?domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=view">
-							<i class="menu-icon fa fa-caret-right"></i>访问情况</a>
-							<b class="arrow"></b></li>
+						<%-- <li id="cache_info"><a href="/cat/r/cache?domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=view">
+							<i class="menu-icon fa fa-caret-right"></i>项目访问指标</a>
+							<b class="arrow"></b></li> --%>
 					</ul>
 				</li>
 				<li id="Database_report" class="hsub"><a href="#" class="dropdown-toggle"> <i class="menu-icon fa fa-lemon-o"></i> <span class="menu-text">Database</span>
@@ -93,11 +93,11 @@
 					</a> <b class="arrow"></b>
 					<ul class="submenu">
 						<li id="database_operation"><a href="/cat/r/storage?id=cat&domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}">
-							<i class="menu-icon fa fa-caret-right"></i>访问趋势</a>
+							<i class="menu-icon fa fa-caret-right"></i>集群指标</a>
 							<b class="arrow"></b></li>
-						<li id="database_system"><a href="/cat/r/database?domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=view">
+						<%-- <li id="database_system"><a href="/cat/r/database?domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=view">
 							<i class="menu-icon fa fa-caret-right"></i>系统指标</a>
-							<b class="arrow"></b></li>
+							<b class="arrow"></b></li> --%>
 					</ul>
 				</li>
 				<li id="State_report" >

@@ -78,8 +78,8 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 			} else {
 				int count = m_attempts.incrementAndGet();
 
-				if (count % 1000 == 0 || count == 1) {
-					m_logger.warn("Netty write buffer is full! Attempts: " + count);
+				if (count % 1000 == 0) {
+					m_logger.info("Netty write buffer is full! Cat will auto reconnect,Attempts: " + count);
 				}
 
 				TimeUnit.MILLISECONDS.sleep(5);
@@ -145,7 +145,7 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 
 	private MessageTree mergeTree(MessageQueue trees) {
 		int max = MAX_CHILD_NUMBER;
-		DefaultTransaction t = new DefaultTransaction("_CatMergeTree", "_CatMergeTree", null);
+		DefaultTransaction t = new DefaultTransaction("System", "MergeTree", null);
 		MessageTree first = trees.poll();
 
 		t.setStatus(Transaction.SUCCESS);

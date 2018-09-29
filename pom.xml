@@ -14,7 +14,6 @@
 		<module>cat-consumer</module>
 		<module>cat-hadoop</module>
 		<module>cat-home</module>
- 		<module>cat-maven-plugin</module>
  	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -116,6 +115,26 @@
 				<artifactId>log4j</artifactId>
 				<version>1.2.14</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.1.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -152,10 +171,10 @@
 							<file>
 								<name>.settings/org.eclipse.jdt.core.prefs</name>
 								<content><![CDATA[
-org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.7
 eclipse.preferences.version=1
-org.eclipse.jdt.core.compiler.source=1.6
-org.eclipse.jdt.core.compiler.compliance=1.6
+org.eclipse.jdt.core.compiler.source=1.7
+org.eclipse.jdt.core.compiler.compliance=1.7
 								]]></content>
 							</file>
 							<file>
@@ -177,11 +196,6 @@ encoding/<project>=UTF-8
 					<groupId>org.unidal.maven.plugins</groupId>
 					<artifactId>plexus-maven-plugin</artifactId>
 					<version>2.5.8</version>
-				</plugin>
-				<plugin>
-					<groupId>com.dianping.cat</groupId>
-					<artifactId>cat-maven-plugin</artifactId>
-					<version>2.0.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

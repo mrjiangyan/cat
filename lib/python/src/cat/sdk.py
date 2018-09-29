@@ -1,0 +1,144 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Author: stdrickforce (Tengyuan Fan)
+# Email: <stdrickforce@gmail.com> <fantengyuan@meituan.com>
+
+import logging
+import os
+import platform
+import time
+
+from .catffi import ffi
+from .const import (
+    ENCODER_BINARY,
+    CAT_SUCCESS
+)
+from .version import _
+
+log = logging.getLogger()
+
+__all__ = ['catSdk']
+
+
+class catSdk(object):
+
+    def __init__(self, appkey, **kwargs):
+        path = os.path.dirname(os.path.abspath(__file__))
+        if 'Linux' in platform.system():
+            self.cat = ffi.dlopen(
+                os.path.join(path, "lib/linux/libcatclient.so")
+            )
+        elif 'Darwin' in platform.system():
+            self.cat = ffi.dlopen(
+                os.path.join(path, "lib/darwin/libcatclient.dylib")
+            )
+        else:
+            log.error("pycat can only run on the Linux/Darwin platform.")
+            return
+
+        self.appkey = appkey
+        self.__init_ccat(**kwargs)
+
+    def __init_ccat(self, encoder=ENCODER_BINARY, sampling=True, debug=False, logview=True):
+        config = ffi.new("CatClientConfig*", [
+            encoder,            # encoder
+            0,                  # heartbeat
+            int(sampling),      # sampling
+            1,                  # multiprocessing
+            1 if debug else 0,  # debug log
+        ])
+        self.cat.catClientInitWithConfig(_(self.appkey), config)
+
+    def new_transaction(self, type, name):
+        return self.cat.newTransaction(_(type), _(name))
+
+    def new_heartbeat(self, type, name):
+        return self.cat.newHeartBeat(_(type), _(name))
+
+    def log_event(self, mtype, mname, status, nameValuePairs):
+        self.cat.logEvent(_(mtype), _(mname), _(status), _(nameValuePairs))
+
+    def log_error(self, msg, err_stack):
+        self.cat.logError(_(msg), _(err_stack))
+
+    def log_metric_for_count(self, name, count=1):
+        self.cat.logMetricForCount(_(name), count)
+
+    def log_metric_for_duration(self, name, duration_ms):
+        self.cat.logMetricForDuration(_(name), duration_ms)
+
+
+class catSdkCoroutine(catSdk):
+    '''
+    This is a wrapper of catSdk.
+    We don't create a ccat Transaction struct but a pycat Transaction instead.
+    All the properties are cached in the pycat object.
+    '''
+
+    class Transaction:
+
+        def __init__(self, sdk, mtype, mname):
+            self._sdk = sdk
+            self._type = mtype
+            self._name = mname
+            self._status = CAT_SUCCESS
+            self._data = ""
+            self._timestamp = time.time() * 1000
+            self._duration = None
+            self._duration_start = self._timestamp
+
+        @property
+        def type(self):
+            return self._type
+
+        @property
+        def name(self):
+            return self._name
+
+        @property
+        def status(self):
+            return self._status
+
+        @property
+        def data(self):
+            return self._data
+
+        def setStatus(self, t, status):
+            self._status = status
+
+        def addData(self, t, data):
+            if self._data == "":
+                self._data = data
+            else:
+                self._data += "&" + data
+
+        def addKV(self, t, key, val):
+            if self._data == "":
+                self._data = "{}={}".format(key, val)
+            else:
+                self._data += "&{}={}".format(key, val)
+
+        def setDurationInMillis(self, t, duration):
+            self._duration = duration
+
+        def setDurationStart(self, t, timestamp):
+            self._duration_start = timestamp
+
+        def setTimestamp(self, t, timestamp):
+            self._timestamp = timestamp
+
+        def complete(self, trans):
+            if self._duration is None:
+                duration = time.time() * 1000 - self._duration_start
+            else:
+                duration = self._duration
+
+            t = self._sdk.cat.newTransaction(_(self.type), _(self.name))
+            t.setTimestamp(t, int(self._timestamp))
+            t.setDurationInMillis(t, int(duration))
+            t.addData(t, _(self.data))
+            t.complete(t)
+
+    def new_transaction(self, type, name):
+        return self.Transaction(self, type, name)
